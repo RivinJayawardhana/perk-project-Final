@@ -38,30 +38,16 @@ async function fetchContactContent(): Promise<ContactContent | null> {
   try {
     const baseUrl = getBaseUrl();
     const url = `${baseUrl}/api/contact-content`;
-    console.log("[fetchContactContent] Fetching from:", url);
     
     const res = await fetch(url, {
       next: { revalidate: 60 }
     });
     
-    console.log("[fetchContactContent] Response status:", res.status);
-    
     if (!res.ok) {
-      console.error("[fetchContactContent] Response not OK:", res.status, res.statusText);
       return null;
     }
     
     const data = await res.json();
-    console.log("[fetchContactContent] Full Data received:", JSON.stringify(data, null, 2));
-    console.log("[fetchContactContent] Has contactInfo key:", 'contactInfo' in data);
-    console.log("[fetchContactContent] contactInfo value:", data?.contactInfo);
-    console.log("[fetchContactContent] All response keys:", Object.keys(data));
-    
-    // Check if contactInfo exists in response (even if null/undefined)
-    if (!data.contactInfo) {
-      console.warn("[fetchContactContent] WARNING: contactInfo is missing or undefined in API response!");
-      console.warn("[fetchContactContent] Data structure:", data);
-    }
     
     // Always ensure contactInfo exists with defaults
     const sanitizedData: ContactContent = {
@@ -73,10 +59,8 @@ async function fetchContactContent(): Promise<ContactContent | null> {
       }
     };
     
-    console.log("[fetchContactContent] Sanitized contactInfo:", sanitizedData.contactInfo);
     return sanitizedData;
   } catch (error) {
-    console.error("[fetchContactContent] Error:", error);
     return null;
   }
 }
@@ -87,18 +71,16 @@ export async function generateMetadata(): Promise<Metadata> {
     title: content?.seo?.metaTitle || "Contact Us - VentureNext",
     description: content?.seo?.metaDescription || "Get in touch with VentureNext. We'd love to hear from you.",
     openGraph: {
-      url: "https://venturenext.co/contact",
+      url: "https://venturenext.io/contact",
     },
     alternates: {
-      canonical: "https://venturenext.co/contact",
+      canonical: "https://venturenext.io/contact",
     },
   };
 }
 
 export default async function Contact() {
   const content = await fetchContactContent();
-
-  console.log("[Contact Page] Full content received:", content);
   
   // Use contactInfo from content or fallback to defaults
   const contactInfo = content?.contactInfo || {
@@ -107,11 +89,9 @@ export default async function Contact() {
     location: "San Francisco, CA"
   };
 
-  console.log("[Contact Page] Final contactInfo to display:", contactInfo);
-
   return (
     <>
-      <script src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}></script>
+      <script async src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}></script>
       <Header />
       <main className="bg-[#fcfaf7] min-h-screen py-0">
         {/* Hero Section - Dynamic */}

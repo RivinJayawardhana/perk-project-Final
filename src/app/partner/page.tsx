@@ -77,10 +77,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: content?.seo?.metaTitle || "Become a Partner - VentureNext",
     description: content?.seo?.metaDescription || "Partner with VentureNext",
     openGraph: {
-      url: "https://venturenext.co/partner",
+      url: "https://venturenext.io/partner",
     },
     alternates: {
-      canonical: "https://venturenext.co/partner",
+      canonical: "https://venturenext.io/partner",
     },
   };
 }

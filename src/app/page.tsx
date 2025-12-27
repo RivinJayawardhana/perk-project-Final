@@ -79,14 +79,36 @@ async function fetchJournals() {
 
 export async function generateMetadata(): Promise<Metadata> {
   const content = await fetchHomeContent();
+  const ogImage = content?.seo?.ogImage || "https://venturenext.io/og-image.jpg";
+  
   return {
     title: content?.seo?.metaTitle || "VentureNext - Exclusive Perks for Ambitious Founders",
-    description: content?.seo?.metaDescription || "Discover exclusive deals, discounts, and perks designed for founders and startup teams.",    openGraph: {
-      url: "https://venturenext.co",
+    description: content?.seo?.metaDescription || "Discover exclusive deals, discounts, and perks designed for founders and startup teams.",
+    openGraph: {
+      title: content?.seo?.metaTitle || "VentureNext - Exclusive Perks for Ambitious Founders",
+      description: content?.seo?.metaDescription || "Discover exclusive deals, discounts, and perks designed for founders and startup teams.",
+      url: "https://venturenext.io",
+      type: "website",
+      siteName: "VentureNext",
+      images: [
+        {
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: "VentureNext - Exclusive Perks for Founders",
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: content?.seo?.metaTitle || "VentureNext - Exclusive Perks for Ambitious Founders",
+      description: content?.seo?.metaDescription || "Discover exclusive deals, discounts, and perks designed for founders and startup teams.",
+      images: [ogImage],
     },
     alternates: {
-      canonical: "https://venturenext.co",
-    },  };
+      canonical: "https://venturenext.io",
+    },
+  };
 }
 
 export default async function Home() {

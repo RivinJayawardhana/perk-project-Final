@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   alternates: {
-    canonical: "https://venturenext.co/journal",
+    canonical: "https://venturenext.io/journal",
   },
 };
 

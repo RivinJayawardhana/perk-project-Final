@@ -14,12 +14,12 @@ export const metadata: Metadata = {
   openGraph: {
     title: "VentureNext - Exclusive Perks for Ambitious Founders",
     description: "Discover exclusive deals, discounts, and perks designed for founders and startup teams.",
-    url: "https://venturenext.co",
+    url: "https://venturenext.io",
     type: "website",
     siteName: "VentureNext",
     images: [
       {
-        url: "https://venturenext.co/og-image.jpg",
+        url: "https://venturenext.io/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "VentureNext - Exclusive Perks for Founders",
@@ -30,10 +30,10 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "VentureNext - Exclusive Perks for Ambitious Founders",
     description: "Discover exclusive deals, discounts, and perks designed for founders and startup teams.",
-    images: ["https://venturenext.co/og-image.jpg"],
+    images: ["https://venturenext.io/og-image.jpg"],
   },
   alternates: {
-    canonical: "https://venturenext.co",
+    canonical: "https://venturenext.io",
   },
 };
 

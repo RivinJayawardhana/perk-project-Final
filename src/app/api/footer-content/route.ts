@@ -70,8 +70,6 @@ const DEFAULT_DATA: FooterData = {
 
 export async function GET() {
   try {
-    console.log("=== FOOTER FETCH START ===");
-    
     // Get the latest footer content row (should be only one)
     const { data, error } = await supabase
       .from("footer_content")
@@ -79,24 +77,15 @@ export async function GET() {
       .order("created_at", { ascending: false })
       .limit(1);
 
-    console.log("GET response:", { error, rowCount: data?.length });
-
     if (error) {
-      console.error("GET error:", error);
       return NextResponse.json(DEFAULT_DATA);
     }
 
     if (!data || data.length === 0) {
-      console.log("No footer content found in DB, returning defaults");
       return NextResponse.json(DEFAULT_DATA);
     }
 
     const row = data[0];
-    console.log("Found footer row:", {
-      id: row.id,
-      hasSocialLinks: !!row.social_links,
-      hasFooterLinks: !!row.footer_links,
-    });
 
     // Check if data exists and has content
     const socialLinks = row.social_links && Array.isArray(row.social_links) && row.social_links.length > 0
@@ -124,8 +113,6 @@ export async function GET() {
       },
     };
 
-    console.log("Returning footer data with", socialLinks.length, "social links and", footerLinks.length, "footer sections");
-    console.log("=== FOOTER FETCH SUCCESS ===");
     return NextResponse.json(footerData);
   } catch (error) {
     console.error("GET /api/footer-content error:", error);

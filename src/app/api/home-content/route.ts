@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js";
 interface SEOData {
   metaTitle: string;
   metaDescription: string;
+  ogImage?: string;
 }
 
 interface HomePageContent {
@@ -94,6 +95,7 @@ const defaultContent: HomePageContent = {
   seo: {
     metaTitle: "VentureNext - Exclusive Perks for Founders & Remote Teams",
     metaDescription: "Discover 500+ exclusive perks and deals for founders, freelancers, and remote teams. Save money on premium tools and services.",
+    ogImage: "https://venturenext.io/og-image.jpg",
   },
 };
 
@@ -160,6 +162,7 @@ export async function GET(request: NextRequest) {
           content.seo = {
             metaTitle: row.title || defaultContent.seo?.metaTitle || "",
             metaDescription: row.description || defaultContent.seo?.metaDescription || "",
+            ogImage: row.content || defaultContent.seo?.ogImage || "",
           };
         }
       });
@@ -253,7 +256,7 @@ export async function POST(request: NextRequest) {
         section_type: "seo",
         title: body.seo.metaTitle || "",
         description: body.seo.metaDescription || "",
-        content: "",
+        content: body.seo.ogImage || "",
         section_order: 0,
         is_active: true,
       });

@@ -36,7 +36,7 @@ export default function ContactFormClient() {
       const recaptchaToken = await getToken('contact_form');
       
       if (!recaptchaToken) {
-        throw new Error('reCAPTCHA verification failed. Please try again.');
+        throw new Error('Unable to verify reCAPTCHA. Please refresh the page and try again.');
       }
 
       const response = await fetch("/api/contact", {
@@ -69,7 +69,6 @@ export default function ContactFormClient() {
       setSubmitted(true);
       setTimeout(() => setSubmitted(false), 2000);
     } catch (error) {
-      console.error("Error submitting form:", error);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to send message. Please try again.",

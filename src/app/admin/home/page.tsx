@@ -38,6 +38,7 @@ interface HomePageContent {
   seo?: {
     metaTitle: string;
     metaDescription: string;
+    ogImage?: string;
   };
 }
 
@@ -96,6 +97,7 @@ const DEFAULT_CONTENT: HomePageContent = {
   seo: {
     metaTitle: "VentureNext - Exclusive Perks for Founders & Remote Teams",
     metaDescription: "Discover 500+ exclusive perks and deals for founders, freelancers, and remote teams. Save money on premium tools and services.",
+    ogImage: "https://venturenext.io/og-image.jpg",
   },
 };
 
@@ -237,6 +239,7 @@ export default function EditHomePage() {
                       seo: {
                         metaTitle: e.target.value,
                         metaDescription: content.seo?.metaDescription || "",
+                        ogImage: content.seo?.ogImage || "",
                       },
                     })
                   }
@@ -257,6 +260,7 @@ export default function EditHomePage() {
                       seo: {
                         metaTitle: content.seo?.metaTitle || "",
                         metaDescription: e.target.value,
+                        ogImage: content.seo?.ogImage || "",
                       },
                     })
                   }
@@ -264,6 +268,71 @@ export default function EditHomePage() {
                   rows={3}
                 />
                 <p className="text-xs text-[#6b7280] mt-1">Recommended: 120-160 characters</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Open Graph Image
+                </label>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const formData = new FormData();
+                          formData.append('file', file);
+                          formData.append('folder', 'og-images');
+                          
+                          try {
+                            const response = await fetch('/api/upload', {
+                              method: 'POST',
+                              body: formData,
+                            });
+                            
+                            if (!response.ok) {
+                              throw new Error('Upload failed');
+                            }
+                            
+                            const data = await response.json();
+                            setContent({
+                              ...content,
+                              seo: {
+                                metaTitle: content.seo?.metaTitle || "",
+                                metaDescription: content.seo?.metaDescription || "",
+                                ogImage: data.url,
+                              },
+                            });
+                            toast({
+                              title: "Success!",
+                              description: "Image uploaded successfully",
+                            });
+                          } catch (error) {
+                            toast({
+                              title: "Error",
+                              description: "Failed to upload image",
+                              variant: "destructive",
+                            });
+                          }
+                        }
+                      }}
+                      className="block w-full text-sm border border-gray-300 rounded-md p-2 cursor-pointer"
+                    />
+                  </div>
+                  <p className="text-xs text-[#6b7280]">Upload image for social media sharing (1200x630px recommended)</p>
+                  {content.seo?.ogImage && (
+                    <div className="mt-2">
+                      <p className="text-xs font-medium mb-2">Current Image:</p>
+                      <img 
+                        src={content.seo.ogImage} 
+                        alt="OG Image Preview" 
+                        className="w-full h-auto max-h-[200px] object-cover rounded border"
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </Card>

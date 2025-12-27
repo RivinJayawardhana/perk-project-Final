@@ -44,16 +44,11 @@ const DEFAULT_CONTENT: ContactPageContent = {
 
 export async function GET(request: NextRequest) {
   try {
-    console.log("[contact-content GET] === START ===");
-    
     const { data: rows, error } = await supabase
       .from("page_content")
       .select("*")
       .eq("page_name", "contact")
       .order("section_order", { ascending: true });
-
-    console.log("[contact-content GET] Query error:", error);
-    console.log("[contact-content GET] Total rows:", rows?.length);
     
     let heroData = DEFAULT_CONTENT.hero;
     let contactInfoData = DEFAULT_CONTENT.contactInfo;
@@ -77,10 +72,9 @@ export async function GET(request: NextRequest) {
                 phone: parsed.phone || "",
                 location: parsed.location || "",
               };
-              console.log("[contact-content GET] contactInfo parsed:", contactInfoData);
             }
           } catch (e) {
-            console.error("[contact-content GET] Parse error:", e);
+            // Silently handle parse errors
           }
         } 
         else if (row.section_type === "seo") {
@@ -98,10 +92,8 @@ export async function GET(request: NextRequest) {
       seo: seoData,
     };
 
-    console.log("[contact-content GET] Response:", JSON.stringify(result));
     return NextResponse.json(result);
   } catch (error) {
-    console.error("[contact-content GET] ERROR:", error);
     return NextResponse.json(DEFAULT_CONTENT);
   }
 }
@@ -109,7 +101,6 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const content: ContactPageContent = await request.json();
-    console.log("[contact-content POST] Received content");
 
     await supabase
       .from("page_content")
@@ -159,10 +150,8 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error;
 
-    console.log("[contact-content POST] Success");
     return NextResponse.json({ success: true, content });
   } catch (error) {
-    console.error("[contact-content POST] Error:", error);
     return NextResponse.json(
       { error: "Failed to save content" },
       { status: 500 }

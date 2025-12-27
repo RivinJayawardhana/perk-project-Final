@@ -95,10 +95,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: content?.seo?.metaTitle || "Privacy Policy - VentureNext",
     description: content?.seo?.metaDescription || "Read our privacy policy",
     openGraph: {
-      url: "https://venturenext.co/privacy",
+      url: "https://venturenext.io/privacy",
     },
     alternates: {
-      canonical: "https://venturenext.co/privacy",
+      canonical: "https://venturenext.io/privacy",
     },
   };
 }
