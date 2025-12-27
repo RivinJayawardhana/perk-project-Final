@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 220 20% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 20%;
+
+    --primary: 42 100% 50%;
+    --primary-foreground: 220 30% 15%;
+
+    --secondary: 220 15% 95%;
+    --secondary-foreground: 220 20% 20%;
+
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 50%;
+
+    --accent: 42 100% 50%;
+    --accent-foreground: 220 30% 15%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 42 100% 50%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 225 25% 12%;
+    --sidebar-foreground: 220 15% 70%;
+    --sidebar-primary: 42 100% 50%;
+    --sidebar-primary-foreground: 225 25% 12%;
+    --sidebar-accent: 225 25% 18%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 225 20% 20%;
+    --sidebar-ring: 42 100% 50%;
+
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 42 100% 50%;
+    --warning-foreground: 220 30% 15%;
+  }
+
+  .dark {
+    --background: 225 25% 8%;
+    --foreground: 220 15% 90%;
+
+    --card: 225 25% 12%;
+    --card-foreground: 220 15% 90%;
+
+    --popover: 225 25% 12%;
+    --popover-foreground: 220 15% 90%;
+
+    --primary: 42 100% 50%;
+    --primary-foreground: 220 30% 15%;
+
+    --secondary: 225 25% 18%;
+    --secondary-foreground: 220 15% 90%;
+
+    --muted: 225 25% 18%;
+    --muted-foreground: 220 15% 60%;
+
+    --accent: 42 100% 50%;
+    --accent-foreground: 220 30% 15%;
+
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 225 20% 20%;
+    --input: 225 20% 20%;
+    --ring: 42 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .text-\[#23272f\] {
+    color: #23272f;
+  }
+}
