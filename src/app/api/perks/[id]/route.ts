@@ -34,7 +34,7 @@ export async function PUT(
     // Build update data with known safe fields
     const updateData: any = {}
     
-    const safeFields = ['name', 'description', 'category', 'discount', 'location', 'image_url', 'logo_url', 'deal_type', 'deal_url', 'best_for', 'status']
+    const safeFields = ['name', 'description', 'category', 'discount', 'location', 'image_url', 'logo_url', 'deal_type', 'deal_url', 'best_for', 'status', 'subcategory']
     
     safeFields.forEach(field => {
       if (body[field] !== undefined && body[field] !== null) {

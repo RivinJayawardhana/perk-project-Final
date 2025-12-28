@@ -94,12 +94,37 @@ export default function EditPerk({ perkId }: EditPerkProps) {
   const [leadFormFields, setLeadFormFields] = useState<FormField[]>([]);
 
   useEffect(() => {
-    if (perkData) {
+    if (perkData && categories) {
+      console.log("=== EditPerk useEffect ===");
+      console.log("perkData:", perkData);
+      console.log("categories:", categories);
+      console.log("allSubcategories:", allSubcategories);
+      
+      // Find the category ID for the stored category name
+      const matchedCat = categories.find((c: any) => c.name === perkData.category);
+      console.log("perkData.category:", perkData.category);
+      console.log("matchedCat:", matchedCat);
+      const categoryId = matchedCat?.id || "";
+      
+      // Find the subcategory if it exists in the subcategories list
+      let subcategoryId = "";
+      let subcategoryName = "";
+      if (perkData.subcategory && allSubcategories) {
+        const matchedSubcat = allSubcategories.find((sub: any) => sub.id === perkData.subcategory);
+        console.log("perkData.subcategory:", perkData.subcategory);
+        console.log("matchedSubcat:", matchedSubcat);
+        subcategoryId = matchedSubcat?.id || "";
+        subcategoryName = matchedSubcat?.name || "";
+        console.log("Subcategory Name:", subcategoryName);
+      }
+      
+      console.log("Setting formData with categoryId:", categoryId, "subcategoryId:", subcategoryId);
+      
       setFormData({
         name: perkData.name || "",
         description: perkData.description || "",
-        category: perkData.category || "",
-        subcategory: perkData.subcategory || "",
+        category: categoryId,
+        subcategory: subcategoryId,
         discount: perkData.discount || "",
         expiry: perkData.expiry || "",
         location: perkData.location || "Global",
@@ -133,8 +158,31 @@ export default function EditPerk({ perkId }: EditPerkProps) {
         // Non-URL string means it's a coupon code
         setDealTypeSelection("coupon");
       }
+      
+      console.log("=== useEffect Complete ===");
+    } else {
+      console.log("Waiting for perkData or categories");
+      console.log("perkData:", perkData);
+      console.log("categories:", categories);
     }
-  }, [perkData]);
+  }, [perkData, categories, allSubcategories]);
+
+  // Update subcategory when allSubcategories loads
+  useEffect(() => {
+    if (perkData && allSubcategories && formData.subcategory === "") {
+      console.log("=== Updating subcategory from allSubcategories ===");
+      if (perkData.subcategory) {
+        const matchedSubcat = allSubcategories.find((sub: any) => sub.id === perkData.subcategory);
+        if (matchedSubcat) {
+          console.log("Found matching subcategory:", matchedSubcat);
+          setFormData(prev => ({
+            ...prev,
+            subcategory: matchedSubcat.id
+          }));
+        }
+      }
+    }
+  }, [allSubcategories, perkData]);
 
   // Load lead form data when perk is lead_capture_form type
   useEffect(() => {
@@ -235,10 +283,14 @@ export default function EditPerk({ perkId }: EditPerkProps) {
       return;
     }
 
+    // Find the category name from the selected ID
+    const selectedCategory = categories?.find((c: any) => c.id === formData.category);
+    
     const updatePayload = {
       name: formData.name,
       description: formData.description,
-      category: formData.category,
+      category: selectedCategory?.name || formData.category,
+      subcategory: formData.subcategory || undefined,
       discount: formData.discount,
       expiry: formData.expiry,
       location: formData.location,
@@ -421,15 +473,15 @@ export default function EditPerk({ perkId }: EditPerkProps) {
                 <Label className="text-sm font-medium mb-2 block">
                   Category <span className="text-destructive">*</span>
                 </Label>
-                <Select value={formData.category} onValueChange={(value) => 
-                  setFormData(prev => ({ ...prev, category: value }))
+                <Select value={formData.category || ""} onValueChange={(value) => 
+                  setFormData(prev => ({ ...prev, category: value, subcategory: "" }))
                 }>
                   <SelectTrigger className="border-amber-200">
                     <SelectValue placeholder="Select category" />
                   </SelectTrigger>
                   <SelectContent>
                     {categories?.map((cat: any) => (
-                      <SelectItem key={cat.id} value={cat.name}>
+                      <SelectItem key={cat.id} value={cat.id}>
                         {cat.name}
                       </SelectItem>
                     ))}
@@ -441,16 +493,15 @@ export default function EditPerk({ perkId }: EditPerkProps) {
               <Label className="text-sm font-medium mb-2 block">Subcategory</Label>
               <Select value={formData.subcategory || ""} onValueChange={(value) => 
                 setFormData(prev => ({ ...prev, subcategory: value }))
-              }>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select subcategory (optional)" />
+              } disabled={!formData.category}>
+                <SelectTrigger className={!formData.category ? "opacity-50" : ""}>
+                  <SelectValue placeholder={formData.category ? "Select subcategory (optional)" : "Select a category first"} />
                 </SelectTrigger>
                 <SelectContent>
                   {formData.category && allSubcategories ? (
                     allSubcategories
                       .filter((sub: any) => {
-                        const selectedCat = categories?.find((c: any) => c.name === formData.category);
-                        return sub.category_id === selectedCat?.id;
+                        return sub.category_id === formData.category;
                       })
                       .map((sub: any) => (
                         <SelectItem key={sub.id} value={sub.id}>

@@ -80,11 +80,18 @@ export default function Perks() {
   const { toast } = useToast();
   const submitLeadMutation = useSubmitLead();
   
+  // Helper function to get subcategory name by ID
+  const getSubcategoryName = (subcategoryId: string | undefined): string | undefined => {
+    if (!subcategoryId || !subcategoriesData) return undefined;
+    const subcat = subcategoriesData.find((sub: any) => sub.id === subcategoryId);
+    return subcat?.name;
+  };
+  
   const [pageContent, setPageContent] = useState<PerksPageContent | null>(null);
   const [contentLoading, setContentLoading] = useState(true);
   const [mockPerks, setMockPerks] = useState<DisplayPerk[]>([]);
   const [categoryOptions, setCategoryOptions] = useState<Array<{label: string, count: number}>>([]);
-  const [subcategoryOptions, setSubcategoryOptions] = useState<Record<string, Array<{label: string, count: number}>>>({});
+  const [subcategoryOptions, setSubcategoryOptions] = useState<Record<string, Array<{label: string, count: number, id: string}>>>({});
   const [dealTypeOptions, setDealTypeOptions] = useState<Array<{label: string, count: number}>>([]);
   const [locationOptions, setLocationOptions] = useState<Array<{label: string, count: number}>>([]);
   const [bestForOptions, setBestForOptions] = useState<Array<{label: string, count: number}>>([]);
@@ -161,17 +168,23 @@ export default function Perks() {
   // Build dynamic subcategory options grouped by category
   useEffect(() => {
     if (subcategoriesData && subcategoriesData.length > 0 && categoriesData && categoriesData.length > 0 && mockPerks.length > 0) {
-      const grouped: Record<string, Array<{label: string, count: number}>> = {};
+      const grouped: Record<string, Array<{label: string, count: number, id: string}>> = {};
       
       // Group subcategories by category name
       categoriesData.forEach((cat: any) => {
         grouped[cat.name] = subcategoriesData
           .filter((sub: any) => sub.category_id === cat.id)
           .map((sub: any) => {
-            // Count perks in this subcategory
-            const count = mockPerks.filter(perk => perk.subcategory === sub.id || perk.subcategory === sub.name).length;
+            // Count perks in this subcategory - match by both id and name for flexibility
+            const count = mockPerks.filter(perk => {
+              if (!perk.subcategory) return false;
+              return perk.subcategory === sub.id || 
+                     perk.subcategory === sub.name ||
+                     perk.subcategory === String(sub.id);
+            }).length;
             return {
               label: sub.name,
+              id: sub.id,
               count: count
             };
           });
@@ -264,11 +277,21 @@ export default function Perks() {
       );
     }
 
-    // Subcategory filter (only if category is selected)
-    if (selectedSubcategories.length > 0 && selectedCategories.length > 0) {
-      filtered = filtered.filter(p => 
-        p.subcategory && selectedSubcategories.includes(p.subcategory)
-      );
+    // Subcategory filter - match by ID
+    if (selectedSubcategories.length > 0) {
+      // Build a set of subcategory IDs from selected labels for faster lookup
+      const selectedSubcatIds = new Set<string>();
+      Object.values(subcategoryOptions).flat().forEach(sub => {
+        if (selectedSubcategories.includes(sub.label)) {
+          selectedSubcatIds.add(sub.id);
+        }
+      });
+
+      filtered = filtered.filter(p => {
+        if (!p.subcategory) return false;
+        // Match perk's subcategory (which is an ID) against the selected subcategory IDs
+        return selectedSubcatIds.has(String(p.subcategory));
+      });
     }
 
     setFilteredPerks(filtered);
@@ -638,7 +661,7 @@ export default function Perks() {
                                 </div>
                                 <div className="flex flex-col">
                                   <span className="text-xs sm:text-sm text-[#6b6f76]">{perk.company}</span>
-                                  <span className="text-xs text-[#6b6f76]">{perk.category}{perk.subcategory ? ` • ${perk.subcategory}` : ""}</span>
+                                  <span className="text-xs text-[#6b6f76]">{perk.category}{perk.subcategory ? ` • ${getSubcategoryName(perk.subcategory)}` : ""}</span>
                                 </div>
                               </div>
 

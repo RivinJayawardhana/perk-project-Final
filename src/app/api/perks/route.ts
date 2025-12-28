@@ -34,6 +34,7 @@ export async function POST(request: Request) {
       deal_type: body.deal_type,
       best_for: body.best_for || null,
       status: body.status || 'Active',
+      subcategory: body.subcategory || null,
     }
     
     // Handle deal_url - handle both null and empty string cases

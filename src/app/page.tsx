@@ -62,6 +62,21 @@ async function fetchPerks() {
   }
 }
 
+async function fetchSubcategories() {
+  try {
+    const baseUrl = getBaseUrl();
+    const url = `${baseUrl}/api/subcategories`;
+    const res = await fetch(url, {
+      next: { revalidate: 60 }
+    });
+    if (!res.ok) return [];
+    return res.json();
+  } catch (error) {
+    console.error("[fetchSubcategories] Error:", error);
+    return [];
+  }
+}
+
 async function fetchJournals() {
   try {
     const baseUrl = getBaseUrl();
@@ -112,11 +127,19 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Home() {
-  const [content, allPerks, allJournals] = await Promise.all([
+  const [content, allPerks, allJournals, allSubcategories] = await Promise.all([
     fetchHomeContent(),
     fetchPerks(),
     fetchJournals(),
+    fetchSubcategories(),
   ]);
+
+  // Helper function to get subcategory name by ID
+  const getSubcategoryName = (subcategoryId: string | null | undefined): string | undefined => {
+    if (!subcategoryId || !allSubcategories) return undefined;
+    const subcat = allSubcategories.find((sub: any) => sub.id === subcategoryId);
+    return subcat?.name;
+  };
 
   if (!content) {
     return (
@@ -250,7 +273,7 @@ export default async function Home() {
                     <img src={perk.logo_url || "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23e5e7eb'/%3E%3C/svg%3E"} alt={perk.name} className="w-8 sm:w-10 h-8 sm:h-10 rounded-full border border-gray-200 flex-shrink-0" />
                     <div className="flex flex-col">
                       <span className="font-semibold text-[#23272f] font-display text-sm sm:text-base line-clamp-1">{perk.name}</span>
-                      <span className="text-xs text-[#6b6f76]">{perk.category}{perk.subcategory ? ` • ${perk.subcategory}` : ""}</span>
+                      <span className="text-xs text-[#6b6f76]">{perk.category}{perk.subcategory ? ` • ${getSubcategoryName(perk.subcategory)}` : ""}</span>
                     </div>
                   </div>
 

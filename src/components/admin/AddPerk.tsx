@@ -93,6 +93,7 @@ export default function AddPerk() {
     setFormData((prev) => ({
       ...prev,
       category: value,
+      subcategory: "",
     }));
   };
 
@@ -171,11 +172,15 @@ export default function AddPerk() {
     
     const selectedDealType = dealTypeMap[dealTypeSelection] || dealTypeSelection;
 
+    // Find the category name from the selected ID
+    const selectedCategory = categories?.find((c: any) => c.id === formData.category);
+
     createPerk(
       {
         name: formData.name,
         description: formData.description,
-        category: formData.category,
+        category: selectedCategory?.name || formData.category,
+        subcategory: formData.subcategory || undefined,
         discount: formData.discount,
         expiry: formData.expiry,
         location: formData.location,
@@ -348,7 +353,7 @@ export default function AddPerk() {
                   </SelectTrigger>
                   <SelectContent>
                     {categories?.map((cat: any) => (
-                      <SelectItem key={cat.id} value={cat.name}>
+                      <SelectItem key={cat.id} value={cat.id}>
                         {cat.name}
                       </SelectItem>
                     ))}
@@ -368,8 +373,7 @@ export default function AddPerk() {
                   {formData.category && allSubcategories && (
                     allSubcategories
                       .filter((sub: any) => {
-                        const selectedCat = categories?.find((c: any) => c.name === formData.category);
-                        return sub.category_id === selectedCat?.id;
+                        return sub.category_id === formData.category;
                       })
                       .map((sub: any) => (
                         <SelectItem key={sub.id} value={sub.id}>
