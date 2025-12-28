@@ -475,10 +475,7 @@ export default function Perks() {
                     <Input
                       placeholder="Search deals..."
                       value={searchTerm}
-                      onChange={e => {
-                        setSearchTerm(e.target.value);
-                        setTimeout(handleFilter, 0);
-                      }}
+                      onChange={e => setSearchTerm(e.target.value)}
                       className="rounded-lg border-gray-200"
                     />
                   </div>
