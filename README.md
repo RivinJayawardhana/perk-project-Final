@@ -305,17 +305,7 @@ npm install --save-dev jest @testing-library/react @testing-library/jest-dom
 - Check domain whitelist in reCAPTCHA console
 - Ensure `NEXT_PUBLIC_APP_URL` matches reCAPTCHA configuration
 
-## 📞 Support & Contact
 
-For issues or questions:
-- Email: hello@venturenext.io
-- GitHub Issues: [Add repo URL]
-
-## 📄 License
-
-[Add license information]
-
-## 📝 Additional Notes
 
 - Always test environment variable changes before deploying to production
 - Keep sensitive keys (.env.local) in `.gitignore`
